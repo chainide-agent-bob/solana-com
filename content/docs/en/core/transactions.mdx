@@ -728,6 +728,31 @@ and includes:
 
 ### Message Header
 
+> [!NOTE] > **Legacy vs Versioned Transactions:**
+>
+> The three-byte message header described below applies to **legacy
+> transactions**. For **versioned transactions (v0)**, the first byte of the
+> message is a version prefix (e.g., `0x80` for v0), and the three-byte header
+> follows after the version byte. In legacy transactions, the first byte is
+> `num_required_signatures`. In versioned transactions, the first byte is the
+> version, and the next three bytes are the header fields as shown below. This
+> distinction is important for correctly parsing and understanding transaction
+> formats.
+>
+> - **Legacy transaction:**
+>   - [header (3 bytes)]
+>   - account keys
+>   - ...
+> - **Versioned transaction (v0):**
+>   - [version (1 byte, e.g., 0x80)]
+>   - [header (3 bytes)]
+>   - account keys
+>   - ...
+>
+> For more details, see
+> [Solana StackExchange Q&A](https://solana.stackexchange.com/q/21089/289) and
+> [advanced/versions guide](/developers/guides/advanced/versions).
+
 The
 [message header](https://github.com/anza-xyz/agave/blob/v2.1.13/sdk/program/src/message/mod.rs#L97)
 uses three bytes to define account privileges.

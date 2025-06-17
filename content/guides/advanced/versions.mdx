@@ -17,6 +17,35 @@ developers **WILL** need update their client side code to prevent
 
 ## Current Transaction Versions
 
+Solana supports both legacy and versioned (v0) transaction formats. It's
+important to understand the structural differences between them, especially
+regarding the message header:
+
+> [!NOTE] > **Legacy vs Versioned Transactions:**
+>
+> The three-byte message header described below applies to **legacy
+> transactions**. For **versioned transactions (v0)**, the first byte of the
+> message is a version prefix (e.g., `0x80` for v0), and the three-byte header
+> follows after the version byte. In legacy transactions, the first byte is
+> `num_required_signatures`. In versioned transactions, the first byte is the
+> version, and the next three bytes are the header fields as shown below. This
+> distinction is important for correctly parsing and understanding transaction
+> formats.
+>
+> - **Legacy transaction:**
+>   - [header (3 bytes)]
+>   - account keys
+>   - ...
+> - **Versioned transaction (v0):**
+>   - [version (1 byte, e.g., 0x80)]
+>   - [header (3 bytes)]
+>   - account keys
+>   - ...
+>
+> For more details, see
+> [Solana StackExchange Q&A](https://solana.stackexchange.com/q/21089/289) and
+> [transactions guide](/docs/core/transactions#message-header).
+
 The Solana runtime supports two transaction versions:
 
 - `legacy` - older transaction format with no additional benefit
@@ -58,15 +87,15 @@ const slot = await connection.getSlot();
 
 // get the latest block (allowing for v0 transactions)
 const block = await connection.getBlock(slot, {
-  maxSupportedTransactionVersion: 0,
+  maxSupportedTransactionVersion: 0
 });
 
 // get a specific transaction (allowing for v0 transactions)
 const getTx = await connection.getTransaction(
   "3jpoANiFeVGisWRY5UP648xRXs3iQasCHABPWRWnoEjeA93nc79WrnGgpgazjq4K9m8g2NJoyKoWBV1Kx5VmtwHQ",
   {
-    maxSupportedTransactionVersion: 0,
-  },
+    maxSupportedTransactionVersion: 0
+  }
 );
 ```
 
@@ -126,8 +155,8 @@ const instructions = [
   web3.SystemProgram.transfer({
     fromPubkey: payer.publicKey,
     toPubkey: toAccount.publicKey,
-    lamports: minRent,
-  }),
+    lamports: minRent
+  })
 ];
 ```
 
@@ -139,7 +168,7 @@ Next, construct a `MessageV0` formatted transaction message with your desired
 const messageV0 = new web3.TransactionMessage({
   payerKey: payer.publicKey,
   recentBlockhash: blockhash,
-  instructions,
+  instructions
 }).compileToV0Message();
 ```
 
